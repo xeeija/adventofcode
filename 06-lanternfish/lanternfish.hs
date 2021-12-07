@@ -26,7 +26,7 @@ tick n = [n - 1]
 
 -- solve' :: Num a => Int -> [a] -> a
 solve' :: Int -> [Integer] -> Integer
-solve' n = sum . (!! n) . iterate simulate' . count
+solve' n = sum . (!! n) . iterate simulate' . hist
 
 simulate' :: (Num a) => [a] -> [a]
 simulate' [a, b, c, d, e, f, g, h, i] = [b, c, d, e, f, g, h + a, i, a]
@@ -35,12 +35,23 @@ simulate' [a, b, c, d, e, f, g, h, i] = [b, c, d, e, f, g, h + a, i, a]
 count :: [Integer] -> [Integer]
 count = map (toInteger . subtract 1 . length) . group . sort . (++ [0 .. 8])
 
+-- Tipp: subtract 1 == pred
+
+hist :: (Eq a, Num a, Enum a) => [a] -> [Integer]
+hist xs = map (`count'` xs) [0 .. 8]
+
+count' :: Eq a => a -> [a] -> Integer
+count' n = toInteger . length . filter (== n)
+
 -- Test cases
 
 inputTest = [3, 4, 3, 1, 2]
 
 -- >>> solve' 80 inputTest
 -- 5934
+
+-- >>> hist inputTest
+-- [0,1,1,2,1,0,0,0,0]
 
 -- >>> count input
 -- [0,124,43,33,55,45,0,0,0]
