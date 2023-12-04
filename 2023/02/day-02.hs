@@ -1,11 +1,29 @@
 import Data.List.Split (splitOn)
 import Data.List (groupBy, sortOn, maximumBy)
 import Data.Function (on)
+import Control.Applicative (liftA2)
+import Control.Monad (liftM2)
 
 type Game = [[Pick]]
 type Pick = (Integer, String)
 
-main = interact $ (++ "\n") . show . (\x -> (solve x, solve2 x))
+-- main = interact $ (++ "\n") . show . (\x -> (solve x, solve2 x))
+
+main = interact $ (++ "\n") . show . liftA2 (,) solve solve2
+
+-- main = interact $ (++ "\n") . show . liftM2 ($) [solve, solve2] . replicate 1
+
+-- main = interact $ (++ "\n") . show . (,) <$> solve <*> solve2
+
+test :: String -> (Integer, Integer)
+test = liftA2 (,) solve solve2
+
+test2 :: String -> [Integer]
+test2 = liftM2 ($) [solve, solve2] . replicate 1
+
+test3 = (,) <$> solve <*> solve2
+test3 :: String -> (Integer, Integer)
+
 
 solve :: String -> Integer
 solve = sum . map fst . filter (all (all valid) . snd) . map parse . lines
