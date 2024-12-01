@@ -2,7 +2,7 @@ import Control.Applicative (liftA2)
 import Data.List.Split (splitOn)
 import Data.List (transpose, sort, group, sortBy)
 import Data.Ord (comparing)
-import Data.Maybe (fromJust)
+import Data.Maybe (fromJust, fromMaybe)
 
 main :: IO ()
 main = interact $ (++ "\n") . show . liftA2 (,) solve solve2
@@ -24,11 +24,7 @@ occurences = map (liftA2 (,) head length) . group . sort
 -- occurences = map (\xs -> (head xs, length xs)) . group . sort . (!! 1) . parse
 
 similarity :: (Num a, Eq a) => [(a, a)] -> a -> a
-similarity occ x = x * occurence (lookup x occ)
-  where 
-    occurence (Just x) = x
-    occurence Nothing = 0
-
+similarity occ x = x * fromMaybe 0 (lookup x occ)
 
 -- Examples
 
